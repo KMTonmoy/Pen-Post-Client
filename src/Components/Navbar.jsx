@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
 
 const Navbar = () => {
@@ -31,9 +31,11 @@ const Navbar = () => {
                 </div>
 
                 {/* Login Button */}
-                <button className='hidden md:flex items-center py-2 md:py-4 px-6 md:px-[30px] gap-1 bg-[#26d1001a] hover:bg-[#26d10052] duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold'>
-                    Login
-                </button>
+                <NavLink to={'login'}>
+                    <button className='hidden md:flex items-center py-2 md:py-4 px-6 md:px-[30px] gap-1 bg-[#26d1001a] hover:bg-[#26d10052] duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold'>
+                        Login
+                    </button>
+                </NavLink>
 
                 {/* Mobile Menu Toggle */}
                 <button onClick={toggleMenu} className='md:hidden text-3xl text-[#1cd100]'>
@@ -52,9 +54,11 @@ const Navbar = () => {
                         <CustomLink to='/blogs' isActive={isActive('/blogs')}>Blogs</CustomLink>
                         <CustomLink to='/about' isActive={isActive('/about')}>About</CustomLink>
                         <CustomLink to='/contact' isActive={isActive('/contact')}>Contact</CustomLink>
-                        <button className='text-center flex py-2 px-4 gap-1 bg-[#26d1001a] hover:bg-[#26d10052] justify-center duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold mt-6'>
-                            Login
-                        </button>
+                        <Link to={'login'}>
+                            <button className='text-center flex py-2 px-4 gap-1 bg-[#26d1001a] hover:bg-[#26d10052] justify-center duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold mt-6'>
+                                Login
+                            </button>
+                        </Link>
                     </div>
                 </div>
             </div>
