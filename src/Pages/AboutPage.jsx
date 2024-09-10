@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 
 const AboutPage = () => {
     return (
-        <div className="p-8 min-h-screen flex flex-col justify-center items-center">
+        <div className="p-8 gap-10 min-h-screen flex flex-col justify-center items-center">
             {/* Owner Section */}
             <motion.div
                 className="flex flex-col md:flex-row items-center justify-center mb-8 space-y-4 md:space-y-0 md:space-x-4"
@@ -25,7 +25,7 @@ const AboutPage = () => {
                     animate={{ opacity: 1, x: 0 }}
                     transition={{ duration: 0.6 }}
                 >
-                    <h2 className="text-2xl font-bold text-gray-800 mb-2">The Owner</h2>
+                    <h2 className="text-2xl font-bold text-gray-800 mb-2">The Bloger</h2>
                     <p className="text-gray-600">
                         Rafique is an English teacher at Public College and the sole blogger of the site. He brings his expertise in education and communication to manage the blog and ensure its success.
                     </p>

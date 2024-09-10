@@ -7,6 +7,8 @@ const Blogs = () => {
     const [selectedCategory, setSelectedCategory] = useState('All');
     const [searchKeyword, setSearchKeyword] = useState('');
     const [filteredBlogs, setFilteredBlogs] = useState([]);
+    const [currentPage, setCurrentPage] = useState(1);
+    const [blogsPerPage] = useState(6);
 
     useEffect(() => {
         const fetchBlogs = async () => {
@@ -30,6 +32,7 @@ const Blogs = () => {
             blog.title.toLowerCase().includes(searchKeyword.toLowerCase())
         );
         setFilteredBlogs(keywordFilteredBlogs);
+        setCurrentPage(1);
     };
 
     useEffect(() => {
@@ -37,14 +40,25 @@ const Blogs = () => {
             ? blogs
             : blogs.filter(blog => blog.category === selectedCategory);
         setFilteredBlogs(filtered);
+        setCurrentPage(1);
     }, [selectedCategory, blogs]);
+
+    const indexOfLastBlog = currentPage * blogsPerPage;
+    const indexOfFirstBlog = indexOfLastBlog - blogsPerPage;
+    const currentBlogs = filteredBlogs.slice(indexOfFirstBlog, indexOfLastBlog);
+
+    const paginate = (pageNumber) => {
+        setCurrentPage(pageNumber);
+        window.scrollTo(0, 0);  // Scroll to top on page change
+    };
+
+    const totalPages = Math.ceil(filteredBlogs.length / blogsPerPage);
 
     return (
         <div className="container mx-auto px-4 py-8">
-            <h1 className="text-3xl font-bold text-center mb-8">Our Blogs</h1>
-            <div className='flex items-center justify-center gap-5 my-10'>
-
-                <div className="flex justify-center  ">
+            <h1 className="text-3xl font-bold text-center mb-8">My Blogs</h1>
+            <div className='flex md:flex-row flex-col items-center justify-center gap-5 my-10'>
+                <div className="flex justify-center">
                     <select
                         className="px-4 py-2 border rounded-md"
                         value={selectedCategory}
@@ -57,8 +71,7 @@ const Blogs = () => {
                         ))}
                     </select>
                 </div>
-
-                <div className="flex justify-center ">
+                <div className="flex justify-center">
                     <input
                         type="text"
                         className="px-4 py-2 border rounded-md mr-2"
@@ -74,10 +87,9 @@ const Blogs = () => {
                     </button>
                 </div>
             </div>
-
             <div className="flex justify-center">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
-                    {filteredBlogs.map(blog => (
+                    {currentBlogs.map(blog => (
                         <Blog
                             key={blog.title}
                             title={blog.title}
@@ -92,6 +104,31 @@ const Blogs = () => {
                         />
                     ))}
                 </div>
+            </div>
+            <div className="flex justify-center mt-8">
+                <button
+                    className={`px-4 py-2 mx-2 ${currentPage === 1 ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={() => paginate(currentPage - 1)}
+                    disabled={currentPage === 1}
+                >
+                    Previous
+                </button>
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        className={`px-4 py-2 mx-2 ${currentPage === index + 1 ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+                        onClick={() => paginate(index + 1)}
+                    >
+                        {index + 1}
+                    </button>
+                ))}
+                <button
+                    className={`px-4 py-2 mx-2 ${currentPage === totalPages ? 'opacity-50 cursor-not-allowed' : ''}`}
+                    onClick={() => paginate(currentPage + 1)}
+                    disabled={currentPage === totalPages}
+                >
+                    Next
+                </button>
             </div>
         </div>
     );

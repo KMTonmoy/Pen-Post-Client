@@ -1,10 +1,12 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { HiMenuAlt3, HiX } from 'react-icons/hi';
+import { AuthContext } from '../providers/AuthProvider';
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
     const location = useLocation();
+    const [dropdownOpen, setDropdownOpen] = useState(false);
     const { pathname } = location;
 
     const toggleMenu = () => {
@@ -13,66 +15,115 @@ const Navbar = () => {
 
     const isActive = (path) => pathname === path;
 
+    const { user } = useContext(AuthContext);
+
+    const toggleDropdown = () => {
+        setDropdownOpen(!dropdownOpen);
+    };
+
     return (
-        <div className='border-y-2 border-gray-200 rounded-2xl mx-4 sm:mx-6 md:mx-8 lg:mx-10'>
-            <div className='flex justify-between py-4 px-5 md:px-7 items-center'>
+        <div className='relative border-b-2 border-gray-200 shadow-lg'>
+            <div className='flex justify-between py-4 px-5 lg:px-8 items-center'>
+                {/* Logo */}
                 <Link to='/'>
-                    <h1 className='text-[28px] sm:text-[32px] md:text-[36px] font-extrabold hover:text-[#1cd100] duration-500'>
+                    <h1 className='text-2xl lg:text-3xl font-extrabold hover:text-[#1cd100] duration-500'>
                         Pen & Post
                     </h1>
                 </Link>
 
                 {/* Desktop Links */}
-                <div className='hidden md:flex gap-[56px] text-[#030712b3]'>
+                <div className='hidden lg:flex gap-10 items-center'>
                     <CustomLink to='/' isActive={isActive('/')}>Home</CustomLink>
                     <CustomLink to='/blogs' isActive={isActive('/blogs')}>Blogs</CustomLink>
                     <CustomLink to='/about' isActive={isActive('/about')}>About</CustomLink>
                     <CustomLink to='/contact' isActive={isActive('/contact')}>Contact</CustomLink>
                 </div>
-
-                {/* Login Button */}
-                <NavLink to={'login'}>
-                    <button className='hidden md:flex items-center py-2 md:py-4 px-6 md:px-[30px] gap-1 bg-[#26d1001a] hover:bg-[#26d10052] duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold'>
-                        Login
-                    </button>
-                </NavLink>
-
+ 
                 {/* Mobile Menu Toggle */}
-                <button onClick={toggleMenu} className='md:hidden text-3xl text-[#1cd100]'>
-                    <HiMenuAlt3 />
-                </button>
+                <div className='flex gap-4'>
+
+                    {
+                        user ? (
+                            <>
+                                <img
+                                    src={'https://static-00.iconduck.com/assets.00/user-icon-1024x1024-dtzturco.png'}
+                                    alt="User Avatar"
+                                    className="w-14 h-14 rounded-full cursor-pointer"
+                                    onClick={toggleDropdown}
+                                />
+                                {dropdownOpen && (
+                                    <div className="absolute right-[80px] p-4 top-16 w-48 bg-white rounded-md shadow-lg py-2 z-50">
+                                        <Link to="/" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                                            Home
+                                        </Link>
+                                        <Link to="/donate" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                                            Donate
+                                        </Link>
+                                        <Link to="/ourDonators" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                                            Our Donators
+                                        </Link>
+                                        <Link to="/about" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                                            About
+                                        </Link>
+                                        <Link to="/profile" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+                                            Dashboard
+                                        </Link>
+                                        <Link to="/logout" className="block w-full text-center px-4 py-2 text-white bg-red-500 rounded-lg">
+                                            Logout
+                                        </Link>
+                                    </div>
+                                )}
+                            </>
+                        ) : (
+                            <Link to={'/login'}>
+                                <button className='text-center px-4 py-2 mt-6 bg-green-500 text-white rounded-lg hover:bg-green-600'>
+                                    Login
+                                </button>
+                            </Link>
+                        )
+                    }
+
+
+
+                    <button onClick={toggleMenu} className='lg:hidden text-3xl text-green-500'>
+                        {isOpen ? <HiX /> : <HiMenuAlt3 />}
+                    </button>
+
+
+                </div>
+
+
+
             </div>
 
             {/* Mobile Menu */}
-            <div className={`fixed top-0 left-0 w-full h-full bg-black bg-opacity-50 z-50 transition-transform transform ${isOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-                <div className='relative bg-white w-3/4 max-w-xs h-full p-6'>
-                    <button onClick={toggleMenu} className='absolute top-4 right-4 text-3xl text-[#1cd100]'>
-                        <HiX />
-                    </button>
-                    <div className='flex flex-col gap-6 mt-10 text-lg'>
-                        <CustomLink to='/' isActive={isActive('/')}>Home</CustomLink>
-                        <CustomLink to='/blogs' isActive={isActive('/blogs')}>Blogs</CustomLink>
-                        <CustomLink to='/about' isActive={isActive('/about')}>About</CustomLink>
-                        <CustomLink to='/contact' isActive={isActive('/contact')}>Contact</CustomLink>
-                        <Link to={'login'}>
-                            <button className='text-center flex py-2 px-4 gap-1 bg-[#26d1001a] hover:bg-[#26d10052] justify-center duration-300 hover:text-[#278619] border-2 border-[#1dd10066] rounded-[12px] text-[#1cd100] font-bold mt-6'>
-                                Login
-                            </button>
-                        </Link>
+            {isOpen && (
+                <div className='lg:hidden fixed inset-0 bg-gray-900 bg-opacity-80 z-50'>
+                    <div className='absolute top-0 right-0 w-3/4 bg-white h-full p-6'>
+                        <button onClick={toggleMenu} className='absolute top-4 right-4 text-3xl text-green-500'>
+                            <HiX />
+                        </button>
+                        <div className='flex flex-col gap-6 mt-10 text-lg'>
+                            <CustomLink to='/' isActive={isActive('/')}>Home</CustomLink>
+                            <CustomLink to='/blogs' isActive={isActive('/blogs')}>Blogs</CustomLink>
+                            <CustomLink to='/about' isActive={isActive('/about')}>About</CustomLink>
+                            <CustomLink to='/contact' isActive={isActive('/contact')}>Contact</CustomLink>
+
+                        </div>
                     </div>
                 </div>
-            </div>
+            )}
         </div>
     );
 };
 
 // Custom Link Component for Active Link Styling
 const CustomLink = ({ to, children, isActive }) => (
-    <Link to={to} className={`relative group font-semibold ${isActive ? 'text-[#1cd100]' : 'text-[#030712b3]'}`}>
-        <span className='group-hover:text-[#1cd100] transition-colors duration-300'>
+    <Link to={to} className={`relative group font-semibold ${isActive ? 'text-green-500' : 'text-gray-700'}`}>
+        <span className='group-hover:text-green-500 transition-colors duration-300'>
             {children}
         </span>
-        <span className={`absolute left-0 bottom-[-2px] h-[2px] transition-all duration-300 ${isActive ? 'w-full bg-[#1cd100]' : 'w-0 group-hover:w-full bg-[#1cd100]'}`}></span>
+        <span className={`absolute left-0 bottom-0 h-[2px] transition-all duration-300 ${isActive ? 'w-full bg-green-500' : 'w-0 group-hover:w-full bg-green-500'}`}></span>
     </Link>
 );
 
