@@ -108,12 +108,7 @@ const AuthProvider = ({ children }) => {
             const currentUser = {
                 email: user?.email,
                 name: user.displayName,
-                role: 'user',
-                status: 'Verified',
-                floorNo: "none",
-                blockName: "none",
-                apartmentNo: "none",
-                rent: "none",
+                photo: user.photoURL,
             };
             const { data } = await axios.put(
                 `http://localhost:8000/user`,
